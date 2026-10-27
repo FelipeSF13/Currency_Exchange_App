@@ -1,15 +1,21 @@
 
 import { useState } from "react";
+
 import Header from "./components/Header";
 import CurrencyCard from "./components/CurrencyCard";
 import ExchangeChart from "./components/ExchangeChart";
+import HistoryTable from "./components/HistoryTable";
+
 import useExchangeRate from "./hooks/useExchangeRate";
+import useExchangeHistory from "./hooks/useExchangeHistory";
+
 import "./App.css";
 
 export default function App() {
   const [amount, setAmount] = useState("1000");
   const [fromCurrency, setFromCurrency] = useState("BRL");
   const [toCurrency, setToCurrency] = useState("USD");
+  const [days, setDays] = useState(30);
 
   const {
     rate,
@@ -17,6 +23,16 @@ export default function App() {
     loading,
     error,
   } = useExchangeRate(fromCurrency, toCurrency);
+
+  const {
+    history,
+    loading: historyLoading,
+    error: historyError,
+  } = useExchangeHistory(
+    fromCurrency,
+    toCurrency,
+    days
+  );
 
   function handleSwap() {
     setFromCurrency(toCurrency);
@@ -63,6 +79,19 @@ export default function App() {
         <ExchangeChart
           fromCurrency={fromCurrency}
           toCurrency={toCurrency}
+          days={days}
+          onDaysChange={setDays}
+          history={history}
+          loading={historyLoading}
+          error={historyError}
+        />
+
+        <HistoryTable
+          history={history}
+          fromCurrency={fromCurrency}
+          toCurrency={toCurrency}
+          loading={historyLoading}
+          error={historyError}
         />
       </main>
 

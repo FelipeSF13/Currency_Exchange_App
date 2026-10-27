@@ -1,5 +1,4 @@
 
-import { useState } from "react";
 import {
   ResponsiveContainer,
   LineChart,
@@ -10,7 +9,6 @@ import {
   Tooltip,
 } from "recharts";
 
-import useExchangeHistory from "../hooks/useExchangeHistory";
 import "./ExchangeChart.css";
 
 const periods = [
@@ -34,16 +32,12 @@ function formatRate(value) {
 export default function ExchangeChart({
   fromCurrency,
   toCurrency,
+  days,
+  onDaysChange,
+  history,
+  loading,
+  error,
 }) {
-  const [days, setDays] = useState(30);
-
-  const { history, loading, error } =
-    useExchangeHistory(
-      fromCurrency,
-      toCurrency,
-      days
-    );
-
   const sameCurrency = fromCurrency === toCurrency;
 
   const chartData = history.map((item) => ({
@@ -87,7 +81,7 @@ export default function ExchangeChart({
                   ? "period-button active"
                   : "period-button"
               }
-              onClick={() => setDays(period.value)}
+              onClick={() => onDaysChange(period.value)}
               aria-pressed={days === period.value}
             >
               {period.label}
@@ -106,7 +100,10 @@ export default function ExchangeChart({
           Carregando histórico de cotações...
         </div>
       ) : error ? (
-        <div className="chart-message chart-error" role="alert">
+        <div
+          className="chart-message chart-error"
+          role="alert"
+        >
           {error}
         </div>
       ) : history.length === 0 ? (
@@ -200,9 +197,7 @@ export default function ExchangeChart({
           <div className="chart-stats">
             <div className="chart-stat">
               <span>Última cotação do período</span>
-              <strong>
-                {formatRate(last.rate)}
-              </strong>
+              <strong>{formatRate(last.rate)}</strong>
             </div>
 
             <div className="chart-stat">
