@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Header from "./components/Header";
 import CurrencyCard from "./components/CurrencyCard";
+import ExchangeChart from "./components/ExchangeChart";
 import useExchangeRate from "./hooks/useExchangeRate";
 import "./App.css";
 
@@ -59,14 +60,10 @@ export default function App() {
           error={error}
         />
 
-        <section className="future-section">
-          <h2>Análise de cotações</h2>
-
-          <p>
-            Em breve, você poderá visualizar gráficos,
-            consultar históricos e exportar dados.
-          </p>
-        </section>
+        <ExchangeChart
+          fromCurrency={fromCurrency}
+          toCurrency={toCurrency}
+        />
       </main>
 
       <footer className="footer">
