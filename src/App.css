@@ -106,12 +106,25 @@
   color: #c2ced5;
 }
 
-.placeholder-field {
+.currency-select {
+  width: 100%;
   min-height: 54px;
-  padding: 17px;
+  padding: 14px 16px;
   background: #293a49;
   border: 1px solid #405363;
   border-radius: 10px;
+  color: #e6edf0;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.currency-select:focus {
+  border-color: #80bbaf;
+  box-shadow: 0 0 0 3px rgba(128, 187, 175, 0.12);
+}
+
+.currency-select option {
+  background: #293a49;
   color: #e6edf0;
 }
 
@@ -119,6 +132,32 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
+}
+
+.swap-button {
+  display: block;
+  margin: 0 0 24px auto;
+  padding: 12px 20px;
+  background: #304d50;
+  color: #a3d5ca;
+  border: 1px solid #416b68;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.swap-button:hover {
+  background: #3c6060;
+}
+
+.swap-button:active {
+  transform: scale(0.98);
+}
+
+.swap-button:focus-visible {
+  outline: 2px solid #a3d5ca;
+  outline-offset: 3px;
 }
 
 .result-box {
@@ -144,6 +183,7 @@
 
 .result-box small {
   color: #b0c5c1;
+  line-height: 1.6;
 }
 
 .future-section {
@@ -198,6 +238,10 @@
   .currency-grid {
     grid-template-columns: 1fr;
     gap: 0;
+  }
+
+  .swap-button {
+    width: 100%;
   }
 
   .footer {
