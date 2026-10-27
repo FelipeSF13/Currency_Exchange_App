@@ -92,6 +92,55 @@
   background: #293a49;
 }
 
+.history-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.history-actions > span {
+  color: #a8b9c5;
+  font-size: 12px;
+}
+
+.export-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 12px 20px;
+  background: #304d50;
+  border: 1px solid #416b68;
+  border-radius: 10px;
+  color: #a3d5ca;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.export-button:hover:not(:disabled) {
+  background: #3c6060;
+}
+
+.export-button:focus-visible {
+  outline: 2px solid #a3d5ca;
+  outline-offset: 3px;
+}
+
+.export-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.export-button span {
+  font-size: 20px;
+  line-height: 1;
+}
+
 .history-table-wrapper {
   width: 100%;
   max-height: 410px;
@@ -165,6 +214,15 @@
 
   .history-filters {
     grid-template-columns: 1fr;
+  }
+
+  .history-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .export-button {
+    width: 100%;
   }
 
   .history-table th,

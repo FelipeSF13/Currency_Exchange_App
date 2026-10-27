@@ -1,5 +1,6 @@
 
 import { useMemo, useState } from "react";
+import exportCsv from "../utils/exportCsv";
 import "./HistoryTable.css";
 
 function formatDate(date) {
@@ -53,6 +54,14 @@ export default function HistoryTable({
       }
     });
   }, [history, search, sortBy]);
+
+  function handleExport() {
+    exportCsv(
+      filteredHistory,
+      fromCurrency,
+      toCurrency
+    );
+  }
 
   return (
     <section className="history-table-card">
@@ -121,6 +130,27 @@ export default function HistoryTable({
             </option>
           </select>
         </div>
+      </div>
+
+      <div className="history-actions">
+        <span>
+          {filteredHistory.length} registro(s)
+          disponível(is) para exportação
+        </span>
+
+        <button
+          type="button"
+          className="export-button"
+          onClick={handleExport}
+          disabled={
+            loading ||
+            Boolean(error) ||
+            filteredHistory.length === 0
+          }
+        >
+          <span aria-hidden="true">↓</span>
+          Exportar CSV
+        </button>
       </div>
 
       {loading ? (
