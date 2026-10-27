@@ -10,6 +10,13 @@ const currencies = [
   { code: "CAD", name: "Dólar canadense" },
 ];
 
+function formatCurrency(value, currency) {
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency,
+  }).format(value);
+}
+
 export default function CurrencyCard({
   amount,
   onAmountChange,
@@ -18,7 +25,38 @@ export default function CurrencyCard({
   toCurrency,
   onToCurrencyChange,
   onSwap,
+  rate,
+  rateDate,
+  loading,
+  error,
 }) {
+  const numericAmount = Number(amount);
+
+  const isValidAmount =
+    amount.trim() !== "" &&
+    Number.isFinite(numericAmount) &&
+    numericAmount >= 0;
+
+  const convertedAmount =
+    rate !== null && isValidAmount
+      ? numericAmount * rate
+      : null;
+
+  let resultMessage = "Aguardando cotação...";
+
+  if (!isValidAmount) {
+    resultMessage = "Digite um valor válido.";
+  } else if (loading) {
+    resultMessage = "Consultando cotação...";
+  } else if (error) {
+    resultMessage = error;
+  } else if (convertedAmount !== null) {
+    resultMessage = formatCurrency(
+      convertedAmount,
+      toCurrency
+    );
+  }
+
   return (
     <section className="currency-card">
       <div className="card-heading">
@@ -71,14 +109,33 @@ export default function CurrencyCard({
         ⇄ Inverter moedas
       </button>
 
-      <div className="result-box" aria-live="polite">
+      <div
+        className="result-box"
+        aria-live="polite"
+        aria-busy={loading}
+      >
         <span>Resultado da conversão</span>
 
-        <strong>Em breve</strong>
+        <strong>{resultMessage}</strong>
+
+        {!loading && !error && rate !== null && (
+          <small>
+            1 {fromCurrency} ={" "}
+            {rate.toLocaleString("pt-BR", {
+              maximumFractionDigits: 6,
+            })}{" "}
+            {toCurrency}
+          </small>
+        )}
+
+        {rateDate && !loading && !error && (
+          <small>
+            Cotação de referência: {rateDate}
+          </small>
+        )}
 
         <small>
-          {amount || "0"} {fromCurrency} para {toCurrency}.
-          A cotação será integrada nas próximas etapas.
+          Dados de referência fornecidos pela Frankfurter.
         </small>
       </div>
     </section>
