@@ -1,7 +1,8 @@
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Header from "./components/Header";
 import CurrencyCard from "./components/CurrencyCard";
+import useExchangeRate from "./hooks/useExchangeRate";
 import "./App.css";
 
 export default function App() {
@@ -9,72 +10,12 @@ export default function App() {
   const [fromCurrency, setFromCurrency] = useState("BRL");
   const [toCurrency, setToCurrency] = useState("USD");
 
-  const [rate, setRate] = useState(null);
-  const [rateDate, setRateDate] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    async function fetchRate() {
-      setRate(null);
-      setRateDate(null);
-      setError("");
-
-      if (fromCurrency === toCurrency) {
-        setRate(1);
-        setLoading(false);
-        return;
-      }
-
-      setLoading(true);
-
-      try {
-        const url =
-          `https://api.frankfurter.dev/v2/rate/` +
-          `${fromCurrency}/${toCurrency}`;
-
-        const response = await fetch(url, {
-          signal: controller.signal,
-        });
-
-        if (!response.ok) {
-          throw new Error("Não foi possível consultar a cotação.");
-        }
-
-        const data = await response.json();
-
-        if (
-          typeof data.rate !== "number" ||
-          !Number.isFinite(data.rate)
-        ) {
-          throw new Error("A API retornou uma cotação inválida.");
-        }
-
-        if (controller.signal.aborted) return;
-
-        setRate(data.rate);
-        setRateDate(data.date);
-      } catch (err) {
-        if (controller.signal.aborted) return;
-
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Ocorreu um erro inesperado."
-        );
-      } finally {
-        if (!controller.signal.aborted) {
-          setLoading(false);
-        }
-      }
-    }
-
-    fetchRate();
-
-    return () => controller.abort();
-  }, [fromCurrency, toCurrency]);
+  const {
+    rate,
+    rateDate,
+    loading,
+    error,
+  } = useExchangeRate(fromCurrency, toCurrency);
 
   function handleSwap() {
     setFromCurrency(toCurrency);
