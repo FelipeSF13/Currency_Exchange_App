@@ -1,5 +1,4 @@
 
-import { useState } from "react";
 import CurrencyInput from "./CurrencyInput";
 
 const currencies = [
@@ -11,21 +10,22 @@ const currencies = [
   { code: "CAD", name: "Dólar canadense" },
 ];
 
-export default function CurrencyCard() {
-  const [amount, setAmount] = useState("1000");
-  const [fromCurrency, setFromCurrency] = useState("BRL");
-  const [toCurrency, setToCurrency] = useState("USD");
-
-  function handleSwap() {
-    setFromCurrency(toCurrency);
-    setToCurrency(fromCurrency);
-  }
-
+export default function CurrencyCard({
+  amount,
+  onAmountChange,
+  fromCurrency,
+  onFromCurrencyChange,
+  toCurrency,
+  onToCurrencyChange,
+  onSwap,
+}) {
   return (
     <section className="currency-card">
       <div className="card-heading">
         <h2>Conversor de moedas</h2>
-        <p>Selecione as moedas e informe o valor desejado.</p>
+        <p>
+          Selecione as moedas e informe o valor desejado.
+        </p>
       </div>
 
       <div className="field">
@@ -38,7 +38,9 @@ export default function CurrencyCard() {
           step="any"
           className="currency-select"
           value={amount}
-          onChange={(event) => setAmount(event.target.value)}
+          onChange={(event) =>
+            onAmountChange(event.target.value)
+          }
           placeholder="Digite um valor"
         />
       </div>
@@ -48,7 +50,7 @@ export default function CurrencyCard() {
           id="fromCurrency"
           label="Moeda de origem"
           value={fromCurrency}
-          onChange={setFromCurrency}
+          onChange={onFromCurrencyChange}
           currencies={currencies}
         />
 
@@ -56,7 +58,7 @@ export default function CurrencyCard() {
           id="toCurrency"
           label="Moeda de destino"
           value={toCurrency}
-          onChange={setToCurrency}
+          onChange={onToCurrencyChange}
           currencies={currencies}
         />
       </div>
@@ -64,7 +66,7 @@ export default function CurrencyCard() {
       <button
         type="button"
         className="swap-button"
-        onClick={handleSwap}
+        onClick={onSwap}
       >
         ⇄ Inverter moedas
       </button>

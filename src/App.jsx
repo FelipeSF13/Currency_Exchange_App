@@ -1,9 +1,19 @@
 
+import { useState } from "react";
 import Header from "./components/Header";
 import CurrencyCard from "./components/CurrencyCard";
 import "./App.css";
 
 export default function App() {
+  const [amount, setAmount] = useState("1000");
+  const [fromCurrency, setFromCurrency] = useState("BRL");
+  const [toCurrency, setToCurrency] = useState("USD");
+
+  function handleSwap() {
+    setFromCurrency(toCurrency);
+    setToCurrency(fromCurrency);
+  }
+
   return (
     <div className="app">
       <Header />
@@ -27,7 +37,15 @@ export default function App() {
           </p>
         </section>
 
-        <CurrencyCard />
+        <CurrencyCard
+          amount={amount}
+          onAmountChange={setAmount}
+          fromCurrency={fromCurrency}
+          onFromCurrencyChange={setFromCurrency}
+          toCurrency={toCurrency}
+          onToCurrencyChange={setToCurrency}
+          onSwap={handleSwap}
+        />
 
         <section className="future-section">
           <h2>Análise de cotações</h2>
