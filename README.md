@@ -245,4 +245,6 @@ Projeto acadêmico individual desenvolvido para aplicação prática dos conteú
 - Vite: https://vite.dev/
 - Recharts: https://recharts.org/
 - Frankfurter API: https://frankfurter.dev/
-```
+
+## FIGMA
+https://five-nougat-94778472.figma.site
