@@ -248,3 +248,7 @@ Projeto acadêmico individual desenvolvido para aplicação prática dos conteú
 
 ## FIGMA
 https://five-nougat-94778472.figma.site
+
+
+## Site hospedado
+https://currency-exchange-app-omega.vercel.app
