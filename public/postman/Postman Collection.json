@@ -1,0 +1,176 @@
+{
+  "info": {
+    "name": "Currency Exchange App | Frankfurter API v2",
+    "description": "Collection acadêmica do Currency Exchange App. GETs correspondentes ao conversor, histórico, listagem de moedas e teste de erro. Frankfurter não tem endpoint de conversão: valor convertido = valor × taxa retornada.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "01 | Cotação de um par",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/v2/rate/{{baseCurrency}}/{{quoteCurrency}}",
+        "description": "Consulta usada pelo useExchangeRate.js; sem API key."
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "const data = pm.response.json();",
+              "pm.test(\"Cotação positiva\", () => pm.expect(data.rate).to.be.a(\"number\").and.above(0));",
+              "pm.test(\"Moedas esperadas\", () => {pm.expect(data.base.toUpperCase()).to.eql(pm.collectionVariables.get(\"baseCurrency\"));pm.expect(data.quote.toUpperCase()).to.eql(pm.collectionVariables.get(\"quoteCurrency\"));});",
+              "if (typeof data.rate === \"number\") {pm.collectionVariables.set(\"lastRate\", String(data.rate)); console.log(\"Simulação (valor x taxa):\", Number(pm.collectionVariables.get(\"amount\")) * data.rate);}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 | Histórico de cotações",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/v2/rates?from={{dateFrom}}&to={{dateTo}}&base={{baseCurrency}}&quotes={{quoteCurrency}}",
+        "description": "Consulta usada pelo useExchangeHistory.js (série temporal)."
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "const rows=pm.response.json();",
+              "pm.test(\"Histórico é uma lista\", () => pm.expect(rows).to.be.an(\"array\"));",
+              "pm.test(\"Itens possuem data, base, quote e rate\", () => rows.forEach(r => {pm.expect(r.date).to.be.a(\"string\"); pm.expect(r.rate).to.be.a(\"number\"); pm.expect(r.base).to.be.a(\"string\"); pm.expect(r.quote).to.be.a(\"string\");}));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 | Listar moedas disponíveis",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/v2/currencies",
+        "description": "Consulta auxiliar para explorar as moedas suportadas. Não é usada no app atual."
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 | Cotação de data específica",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/v2/rates?date={{dateFrom}}&base={{baseCurrency}}&quotes={{quoteCurrency}}",
+        "description": "Consulta de apoio para testes históricos. Não usada diretamente no app."
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 | Moeda inválida (teste negativo)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/v2/rate/ABC/{{quoteCurrency}}",
+        "description": "Teste de erro esperado; não usado diretamente no app."
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Erro HTTP esperado\", () => pm.expect([400,404,422]).to.include(pm.response.code));"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.frankfurter.dev"
+    },
+    {
+      "key": "baseCurrency",
+      "value": "BRL"
+    },
+    {
+      "key": "quoteCurrency",
+      "value": "USD"
+    },
+    {
+      "key": "amount",
+      "value": "1000"
+    },
+    {
+      "key": "dateFrom",
+      "value": "2026-10-01"
+    },
+    {
+      "key": "dateTo",
+      "value": "2026-10-27"
+    },
+    {
+      "key": "lastRate",
+      "value": ""
+    }
+  ]
+}
